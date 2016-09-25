@@ -101,7 +101,9 @@ public class NodeBidirectional extends Node {
         while (listToTarget.getLast().parent != null) {
             listToTarget.addLast(listToTarget.getLast().parent);
         }
-
+        if (nodeFromStart != null && nodeFromTarget != null) {
+            writer.write("Длина пути: " + (nodeFromStart.depth + nodeFromTarget.depth) + "\r\n");
+        }
         writer.write("Решиение путём двунаправленного поиска:\r\n");
         for (Node node : listFromStart) {
             writer.write(node.action);
@@ -147,11 +149,13 @@ public class NodeBidirectional extends Node {
             System.out.println("Поиск закончен");
             System.out.println("Количество созданных вершин: " + countNodes);
             System.out.println("Количество пройденных шагов:  " + countSteps);
+
             try {
-                backtracking(new FileWriter("solution.txt"));
+                backtracking(new PrintWriter(System.out));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
             return true;
         } else {
             State tmp;

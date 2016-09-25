@@ -36,7 +36,6 @@ public class NodeDepth extends Node {
         System.out.println(node.state);
     }
 
-
     /**
      * Поиск пути решения и запись в поток
      *
@@ -134,6 +133,4 @@ public class NodeDepth extends Node {
             return false;
         }
     }
-
-
 }
