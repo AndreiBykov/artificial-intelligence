@@ -1,11 +1,12 @@
 package BlindSearch;
 
 import java.util.Arrays;
+import java.util.List;
 
 
-class State {
-    static final State TARGET = new State(new int[][]{{1, 2, 3}, {8, 0, 4}, {7, 6, 5}});
-    static final State FIRST = new State(new int[][]{{6, 0, 8}, {5, 2, 1}, {4, 3, 7}});
+public class State {
+    public static final State TARGET = new State(new int[][]{{1, 2, 3}, {8, 0, 4}, {7, 6, 5}});
+    public static final State FIRST = new State(new int[][]{{6, 0, 8}, {5, 2, 1}, {4, 3, 7}});
     private static final int N = 3;
 
     private final int[][] matrix;
@@ -14,8 +15,10 @@ class State {
 
     private State(int[][] matrix) {
         this.matrix = matrix;
-        zeroI = searchZeroI();
-        zeroJ = searchZeroJ();
+        List<Integer> list = searchElement(0);
+        zeroI = list.get(0);
+        zeroJ = list.get(1);
+
     }
 
     private State(int[][] matrix, int zeroI, int zeroJ) {
@@ -29,7 +32,7 @@ class State {
      *
      * @return {@code true} если состояние является целевым
      */
-    boolean isTarget() {
+    public boolean isTarget() {
         return equals(TARGET);
     }
 
@@ -75,7 +78,7 @@ class State {
      *
      * @return {@code true} если возможно
      */
-    boolean canMoveRight() {
+    public boolean canMoveRight() {
         return zeroJ > 0 && zeroJ < N;
     }
 
@@ -84,7 +87,7 @@ class State {
      *
      * @return полученное состояние
      */
-    State moveRight() {
+    public State moveRight() {
         if (canMoveRight()) {
             int[][] result = copyMatrix();
             swap(result, zeroI, zeroJ, zeroI, zeroJ - 1);
@@ -98,7 +101,7 @@ class State {
      *
      * @return {@code true} если возможно
      */
-    boolean canMoveLeft() {
+    public boolean canMoveLeft() {
         return zeroJ >= 0 && zeroJ < N - 1;
     }
 
@@ -107,7 +110,7 @@ class State {
      *
      * @return полученное состояние
      */
-    State moveLeft() {
+    public State moveLeft() {
         if (canMoveLeft()) {
             int[][] result = copyMatrix();
             swap(result, zeroI, zeroJ, zeroI, zeroJ + 1);
@@ -121,7 +124,7 @@ class State {
      *
      * @return {@code true} если возможно
      */
-    boolean canMoveUp() {
+    public boolean canMoveUp() {
         return zeroI >= 0 && zeroI < N - 1;
     }
 
@@ -130,7 +133,7 @@ class State {
      *
      * @return полученное состояние
      */
-    State moveUp() {
+    public State moveUp() {
         if (canMoveUp()) {
             int[][] result = copyMatrix();
             swap(result, zeroI, zeroJ, zeroI + 1, zeroJ);
@@ -144,7 +147,7 @@ class State {
      *
      * @return {@code true} если возможно
      */
-    boolean canMoveDown() {
+    public boolean canMoveDown() {
         return zeroI > 0 && zeroI < N;
     }
 
@@ -153,7 +156,7 @@ class State {
      *
      * @return полученное состояние
      */
-    State moveDown() {
+    public State moveDown() {
         if (canMoveDown()) {
             int[][] result = copyMatrix();
             swap(result, zeroI, zeroJ, zeroI - 1, zeroJ);
@@ -191,11 +194,30 @@ class State {
     }
 
     /**
+     * Поиск в матрице заданного элемента
+     *
+     * @param elem элемент, который ищем
+     * @return список, в котором первый элемент - строка, второй - столбец.
+     */
+    private List<Integer> searchElement(int elem) {
+        List<Integer> list = null;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (matrix[i][j] == elem) {
+                    list = Arrays.asList(i, j);
+                }
+            }
+        }
+        return list;
+    }
+
+
+    /**
      * Поиск строки с нулевым элементом (пустой клеткой)
      *
      * @return индекс строки
      */
-    private int searchZeroI() {
+    /*private int searchZeroI() {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 if (matrix[i][j] == 0) {
@@ -204,14 +226,14 @@ class State {
             }
         }
         return -1;
-    }
+    }*/
 
     /**
      * Поиск столбца с нулевым элементом (пустой клеткой)
      *
      * @return индекс столбца
      */
-    private int searchZeroJ() {
+   /* private int searchZeroJ() {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 if (matrix[i][j] == 0) {
@@ -220,5 +242,29 @@ class State {
             }
         }
         return -1;
+    }*/
+    public int numberOfChipsIsNotInPlace(State target) {
+        int count = 0;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (matrix[i][j] != target.matrix[i][j] && target.matrix[i][j] != 0) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public int manhattanDistance(State target) {
+        int distance = 0;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (matrix[i][j] != 0) {
+                    List<Integer> list = target.searchElement(matrix[i][j]);
+                    distance += Math.abs(i - list.get(0)) + Math.abs(j - list.get(1));
+                }
+            }
+        }
+        return distance;
     }
 }

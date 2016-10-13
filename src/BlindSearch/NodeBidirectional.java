@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 
 
-public class NodeBidirectional extends Node {
+class NodeBidirectional extends Node {
 
     private static final LinkedList<NodeBidirectional> QUEUE_FROM_START = new LinkedList<>();
     private static final LinkedList<NodeBidirectional> QUEUE_FROM_TARGET = new LinkedList<>();
@@ -81,7 +81,7 @@ public class NodeBidirectional extends Node {
      * @throws IOException
      */
     @Override
-    void backtracking(Writer writer) throws IOException {
+    public void backtracking(Writer writer) throws IOException {
         NodeBidirectional nodeFromStart;
         NodeBidirectional nodeFromTarget;
         if (countSteps % 2 == 1) {
@@ -123,7 +123,7 @@ public class NodeBidirectional extends Node {
      * @return {@code true} если мы достигли конца (нашли решение или закончили, не найдя его)
      */
     @Override
-    boolean expand() {
+    public boolean expand() {
         System.out.println("Текущая вершина:");
         System.out.println(state);
         System.out.println("Глубина: " + depth + "; Стоимость: " + cost + "; Действие: " + action + ";");

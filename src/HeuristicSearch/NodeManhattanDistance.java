@@ -1,16 +1,28 @@
-package BlindSearch;
+package HeuristicSearch;
+
+import BlindSearch.Node;
+import BlindSearch.State;
 
 import java.io.*;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+class NodeManhattanDistance extends Node {
 
-class NodeDepth extends Node {
-
-    private static final LinkedList<NodeDepth> QUEUE = new LinkedList<>();
+    private static final LinkedList<NodeManhattanDistance> QUEUE = new LinkedList<>();
+    /*private static final TreeSet<NodeManhattanDistance> QUEUE = new TreeSet<>(new Comparator<NodeManhattanDistance>() {
+        @Override
+        public int compare(NodeManhattanDistance o1, NodeManhattanDistance o2) {
+            int x1 = o1.state.numberOfChipsIsNotInPlace(State.TARGET) + o1.cost;
+            int x2 = o2.state.numberOfChipsIsNotInPlace(State.TARGET) + o2.cost;
+            return x1 - x2;
+        }
+    });*/
     private static final HashSet<State> STATES = new HashSet<>();
 
-    NodeDepth(int depth, Node parent, int cost, char action, State state) {
+    NodeManhattanDistance(int depth, Node parent, int cost, char action, State state) {
         super(depth, parent, cost, action, state);
     }
 
@@ -29,9 +41,9 @@ class NodeDepth extends Node {
      * Создание начальной вершины
      */
     private static void createFirstNode() {
-        NodeDepth node = new NodeDepth(0, null, 0, '0', State.FIRST);
+        NodeManhattanDistance node = new NodeManhattanDistance(0, null, 0, '0', State.FIRST);
         STATES.add(State.FIRST);
-        QUEUE.push(node);
+        QUEUE.add(node);
         System.out.println("Создана начальная вершина:");
         System.out.println(node.state);
     }
@@ -49,7 +61,7 @@ class NodeDepth extends Node {
         while (list.getFirst().parent != null) {
             list.addFirst(list.getFirst().parent);
         }
-        writer.write("Решиение путём поиска в глубину:\r\n");
+        writer.write("Решиение путём эвристического поиска с функцией, основанной на манхэттенском расстоянии:\r\n");
         for (Node node : list) {
             writer.write(node.action);
         }
@@ -66,6 +78,7 @@ class NodeDepth extends Node {
     public boolean expand() {
         System.out.println("Текущая вершина:");
         System.out.println(state);
+        System.out.println("Манхэттенское расстояние до цели: " + state.manhattanDistance(State.TARGET));
         System.out.println("Глубина: " + depth + "; Стоимость: " + cost + "; Действие: " + action + ";");
         if (state.isTarget()) {
             System.out.println("Поиск закончен");
@@ -83,16 +96,15 @@ class NodeDepth extends Node {
             if (state.canMoveLeft()) {
                 tmp = state.moveLeft();
                 if (STATES.add(tmp)) {
-                    QUEUE.push(new NodeDepth(depth + 1, this, cost + 1, 'L', tmp));
+                    QUEUE.push(new NodeManhattanDistance(depth + 1, this, cost + 1, 'L', tmp));
                     System.out.println("Создана вершина действием L:");
                     System.out.println(tmp);
                 }
             }
-
             if (state.canMoveDown()) {
                 tmp = state.moveDown();
                 if (STATES.add(tmp)) {
-                    QUEUE.push(new NodeDepth(depth + 1, this, cost + 1, 'D', tmp));
+                    QUEUE.push(new NodeManhattanDistance(depth + 1, this, cost + 1, 'D', tmp));
                     System.out.println("Создана вершина действием D:");
                     System.out.println(tmp);
                 }
@@ -100,7 +112,7 @@ class NodeDepth extends Node {
             if (state.canMoveRight()) {
                 tmp = state.moveRight();
                 if (STATES.add(tmp)) {
-                    QUEUE.push(new NodeDepth(depth + 1, this, cost + 1, 'R', tmp));
+                    QUEUE.push(new NodeManhattanDistance(depth + 1, this, cost + 1, 'R', tmp));
                     System.out.println("Создана вершина действием R:");
                     System.out.println(tmp);
                 }
@@ -108,7 +120,7 @@ class NodeDepth extends Node {
             if (state.canMoveUp()) {
                 tmp = state.moveUp();
                 if (STATES.add(tmp)) {
-                    QUEUE.push(new NodeDepth(depth + 1, this, cost + 1, 'U', tmp));
+                    QUEUE.push(new NodeManhattanDistance(depth + 1, this, cost + 1, 'U', tmp));
                     System.out.println("Создана вершина действием U:");
                     System.out.println(tmp);
                 }
@@ -127,6 +139,14 @@ class NodeDepth extends Node {
     static boolean nextStep() {
         if (!QUEUE.isEmpty()) {
             countSteps++;
+            Collections.sort(QUEUE, new Comparator<NodeManhattanDistance>() {
+                @Override
+                public int compare(NodeManhattanDistance o1, NodeManhattanDistance o2) {
+                    int x1 = o1.state.manhattanDistance(State.TARGET) + o1.cost;
+                    int x2 = o2.state.manhattanDistance(State.TARGET) + o2.cost;
+                    return x1 - x2;
+                }
+            });
             return !QUEUE.pop().expand();
         } else {
             System.out.println("Решение не найдено.");

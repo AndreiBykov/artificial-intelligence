@@ -3,16 +3,16 @@ package BlindSearch;
 import java.io.*;
 
 public abstract class Node {
-    static int countSteps;
-    static int countNodes;
+    public static int countSteps;
+    public static int countNodes;
 
-    protected final int depth;
-    protected final Node parent;
-    protected final int cost;
-    protected final char action;
-    protected final State state;
+    public final int depth;
+    public final Node parent;
+    public final int cost;
+    public final char action;
+    public final State state;
 
-    Node(int depth, Node parent, int cost, char action, State state) {
+    public Node(int depth, Node parent, int cost, char action, State state) {
         this.depth = depth;
         this.parent = parent;
         this.cost = cost;
@@ -21,8 +21,8 @@ public abstract class Node {
         countNodes++;
     }
 
-    abstract void backtracking(Writer writer) throws IOException;
+    public abstract void backtracking(Writer writer) throws IOException;
 
-    abstract boolean expand();
+    public abstract boolean expand();
 }
 
