@@ -12,17 +12,10 @@ import java.util.LinkedList;
 class NodeManhattanDistance extends Node {
 
     private static final LinkedList<NodeManhattanDistance> QUEUE = new LinkedList<>();
-    /*private static final TreeSet<NodeManhattanDistance> QUEUE = new TreeSet<>(new Comparator<NodeManhattanDistance>() {
-        @Override
-        public int compare(NodeManhattanDistance o1, NodeManhattanDistance o2) {
-            int x1 = o1.state.numberOfChipsIsNotInPlace(State.TARGET) + o1.cost;
-            int x2 = o2.state.numberOfChipsIsNotInPlace(State.TARGET) + o2.cost;
-            return x1 - x2;
-        }
-    });*/
+
     private static final HashSet<State> STATES = new HashSet<>();
 
-    NodeManhattanDistance(int depth, Node parent, int cost, char action, State state) {
+    private NodeManhattanDistance(int depth, Node parent, int cost, char action, State state) {
         super(depth, parent, cost, action, state);
     }
 
@@ -136,7 +129,7 @@ class NodeManhattanDistance extends Node {
      *
      * @return {@code true} если ещё есть шаги для поиска решения
      */
-    static boolean nextStep() {
+    private static boolean nextStep() {
         if (!QUEUE.isEmpty()) {
             countSteps++;
             Collections.sort(QUEUE, new Comparator<NodeManhattanDistance>() {

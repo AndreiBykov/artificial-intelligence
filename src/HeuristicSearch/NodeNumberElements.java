@@ -8,18 +8,11 @@ import java.util.*;
 
 class NodeNumberElements extends Node {
 
-    private static final LinkedList<NodeManhattanDistance> QUEUE = new LinkedList<>();
-    /*private static final TreeSet<NodeManhattanDistance> QUEUE = new TreeSet<>(new Comparator<NodeManhattanDistance>() {
-        @Override
-        public int compare(NodeManhattanDistance o1, NodeManhattanDistance o2) {
-            int x1 = o1.state.numberOfChipsIsNotInPlace(State.TARGET) + o1.cost;
-            int x2 = o2.state.numberOfChipsIsNotInPlace(State.TARGET) + o2.cost;
-            return x1 - x2;
-        }
-    });*/
+    private static final LinkedList<NodeNumberElements> QUEUE = new LinkedList<>();
+
     private static final HashSet<State> STATES = new HashSet<>();
 
-    NodeNumberElements(int depth, Node parent, int cost, char action, State state) {
+    private NodeNumberElements(int depth, Node parent, int cost, char action, State state) {
         super(depth, parent, cost, action, state);
     }
 
@@ -38,7 +31,7 @@ class NodeNumberElements extends Node {
      * Создание начальной вершины
      */
     private static void createFirstNode() {
-        NodeManhattanDistance node = new NodeManhattanDistance(0, null, 0, '0', State.FIRST);
+        NodeNumberElements node = new NodeNumberElements(0, null, 0, '0', State.FIRST);
         STATES.add(State.FIRST);
         QUEUE.add(node);
         System.out.println("Создана начальная вершина:");
@@ -93,7 +86,7 @@ class NodeNumberElements extends Node {
             if (state.canMoveLeft()) {
                 tmp = state.moveLeft();
                 if (STATES.add(tmp)) {
-                    QUEUE.push(new NodeManhattanDistance(depth + 1, this, cost + 1, 'L', tmp));
+                    QUEUE.push(new NodeNumberElements(depth + 1, this, cost + 1, 'L', tmp));
                     System.out.println("Создана вершина действием L:");
                     System.out.println(tmp);
                 }
@@ -101,7 +94,7 @@ class NodeNumberElements extends Node {
             if (state.canMoveDown()) {
                 tmp = state.moveDown();
                 if (STATES.add(tmp)) {
-                    QUEUE.push(new NodeManhattanDistance(depth + 1, this, cost + 1, 'D', tmp));
+                    QUEUE.push(new NodeNumberElements(depth + 1, this, cost + 1, 'D', tmp));
                     System.out.println("Создана вершина действием D:");
                     System.out.println(tmp);
                 }
@@ -109,7 +102,7 @@ class NodeNumberElements extends Node {
             if (state.canMoveRight()) {
                 tmp = state.moveRight();
                 if (STATES.add(tmp)) {
-                    QUEUE.push(new NodeManhattanDistance(depth + 1, this, cost + 1, 'R', tmp));
+                    QUEUE.push(new NodeNumberElements(depth + 1, this, cost + 1, 'R', tmp));
                     System.out.println("Создана вершина действием R:");
                     System.out.println(tmp);
                 }
@@ -117,7 +110,7 @@ class NodeNumberElements extends Node {
             if (state.canMoveUp()) {
                 tmp = state.moveUp();
                 if (STATES.add(tmp)) {
-                    QUEUE.push(new NodeManhattanDistance(depth + 1, this, cost + 1, 'U', tmp));
+                    QUEUE.push(new NodeNumberElements(depth + 1, this, cost + 1, 'U', tmp));
                     System.out.println("Создана вершина действием U:");
                     System.out.println(tmp);
                 }
@@ -133,12 +126,12 @@ class NodeNumberElements extends Node {
      *
      * @return {@code true} если ещё есть шаги для поиска решения
      */
-    static boolean nextStep() {
+    private static boolean nextStep() {
         if (!QUEUE.isEmpty()) {
             countSteps++;
-            Collections.sort(QUEUE, new Comparator<NodeManhattanDistance>() {
+            Collections.sort(QUEUE, new Comparator<NodeNumberElements>() {
                 @Override
-                public int compare(NodeManhattanDistance o1, NodeManhattanDistance o2) {
+                public int compare(NodeNumberElements o1, NodeNumberElements o2) {
                     int x1 = o1.state.numberOfChipsIsNotInPlace(State.TARGET) + o1.cost;
                     int x2 = o2.state.numberOfChipsIsNotInPlace(State.TARGET) + o2.cost;
                     return x1 - x2;
