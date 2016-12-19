@@ -21,7 +21,7 @@ public abstract class Node {
         countNodes++;
     }
 
-    public abstract void backtracking(Writer writer) throws IOException;
+    public abstract void backtracking(PrintStream writer) throws IOException;
 
     public abstract boolean expand();
 }

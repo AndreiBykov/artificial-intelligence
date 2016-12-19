@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.concurrent.SynchronousQueue;
 
 class NodeManhattanDistance extends Node {
 
@@ -19,13 +20,17 @@ class NodeManhattanDistance extends Node {
         super(depth, parent, cost, action, state);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void start() {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         boolean flag = false;
         createFirstNode();
         while (nextStep()) {
             if (!flag) {
-                flag = "run".equalsIgnoreCase(reader.readLine());
+                try {
+                    flag = "run".equalsIgnoreCase(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException();
+                }
             }
         }
     }
@@ -48,13 +53,13 @@ class NodeManhattanDistance extends Node {
      * @throws IOException
      */
     @Override
-    public void backtracking(Writer writer) throws IOException {
+    public void backtracking(PrintStream writer) throws IOException {
         LinkedList<Node> list = new LinkedList<>();
         list.add(this);
         while (list.getFirst().parent != null) {
             list.addFirst(list.getFirst().parent);
         }
-        writer.write("Решиение путём эвристического поиска с функцией, основанной на манхэттенском расстоянии:\r\n");
+        writer.println("Решиение путём эвристического поиска с функцией, основанной на манхэттенском расстоянии:");
         for (Node node : list) {
             writer.write(node.action);
         }
@@ -78,7 +83,7 @@ class NodeManhattanDistance extends Node {
             System.out.println("Количество созданных вершин: " + countNodes);
             System.out.println("Количество пройденных шагов:  " + countSteps);
             try {
-                backtracking(new FileWriter("solution.txt"));
+                backtracking(System.out);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -14,13 +14,17 @@ class NodeDepth extends Node {
         super(depth, parent, cost, action, state);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void start() {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         boolean flag = false;
         createFirstNode();
         while (nextStep()) {
             if (!flag) {
-                flag = "run".equalsIgnoreCase(reader.readLine());
+                try {
+                    flag = "run".equalsIgnoreCase(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException();
+                }
             }
         }
     }
@@ -43,13 +47,13 @@ class NodeDepth extends Node {
      * @throws IOException
      */
     @Override
-    public void backtracking(Writer writer) throws IOException {
+    public void backtracking(PrintStream writer) throws IOException {
         LinkedList<Node> list = new LinkedList<>();
         list.add(this);
         while (list.getFirst().parent != null) {
             list.addFirst(list.getFirst().parent);
         }
-        writer.write("Решиение путём поиска в глубину:\r\n");
+        writer.println("Решиение путём поиска в глубину:");
         for (Node node : list) {
             writer.write(node.action);
         }
@@ -72,7 +76,7 @@ class NodeDepth extends Node {
             System.out.println("Количество созданных вершин: " + countNodes);
             System.out.println("Количество пройденных шагов:  " + countSteps);
             try {
-                backtracking(new FileWriter("solution.txt"));
+                backtracking(new PrintStream(new FileOutputStream("solution.txt")));
             } catch (IOException e) {
                 e.printStackTrace();
             }

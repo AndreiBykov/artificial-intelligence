@@ -23,7 +23,7 @@ class NodeBidirectional extends Node {
         super(depth, parent, cost, action, state);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void start() {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         boolean flag = false;
         createFirstNode();
@@ -31,7 +31,11 @@ class NodeBidirectional extends Node {
         System.out.println("-----------------------------------------------");
         while (nextStep()) {
             if (!flag) {
-                flag = "run".equalsIgnoreCase(reader.readLine());
+                try {
+                    flag = "run".equalsIgnoreCase(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException();
+                }
             }
         }
     }
@@ -81,7 +85,7 @@ class NodeBidirectional extends Node {
      * @throws IOException
      */
     @Override
-    public void backtracking(Writer writer) throws IOException {
+    public void backtracking(PrintStream writer) throws IOException {
         NodeBidirectional nodeFromStart;
         NodeBidirectional nodeFromTarget;
         if (countSteps % 2 == 1) {
@@ -102,9 +106,9 @@ class NodeBidirectional extends Node {
             listToTarget.addLast(listToTarget.getLast().parent);
         }
         if (nodeFromStart != null && nodeFromTarget != null) {
-            writer.write("Длина пути: " + (nodeFromStart.depth + nodeFromTarget.depth) + "\r\n");
+            writer.println("Длина пути: " + (nodeFromStart.depth + nodeFromTarget.depth));
         }
-        writer.write("Решиение путём двунаправленного поиска:\r\n");
+        writer.println("Решиение путём двунаправленного поиска:");
         for (Node node : listFromStart) {
             writer.write(node.action);
         }
@@ -151,7 +155,7 @@ class NodeBidirectional extends Node {
             System.out.println("Количество пройденных шагов:  " + countSteps);
 
             try {
-                backtracking(new PrintWriter(System.out));
+                backtracking(System.out);
             } catch (IOException e) {
                 e.printStackTrace();
             }
